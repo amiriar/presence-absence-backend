@@ -34,13 +34,13 @@ class StudentController {
     try {
       const { pcId, username, password, course } = req.body;
 
-      if (!course === "network" || !course === "software") {
+      if (!(course === "network") || !(course === "software")) {
         return res.status(401).json({
           error: "لطفا فیلد هارا دست کاری نکنید!!.",
         });
       }
 
-      if (!pcId || !username || !password) {
+      if (!pcId || !username || !password || !course) {
         return res.status(401).json({
           error: "لطفا تمامی فیلد ها را پر کنید.",
         });
