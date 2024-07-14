@@ -21,8 +21,8 @@ class StudentController {
 
   async isLoggedById(req, res, next) {
     try {
-      const { pcId } = req.params;
-      const LoggedinUser = await this.#service.isLoggedById(pcId);
+      const { nationalCode } = req.params;
+      const LoggedinUser = await this.#service.isLoggedById(nationalCode);
       return res.json(LoggedinUser);
     } catch (error) {
       next(error);

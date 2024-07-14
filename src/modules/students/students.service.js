@@ -41,7 +41,7 @@ class StudentService {
     const time = moment().format("HH:mm");
 
     const student = await this.#model.findOne(
-      { pcId, username },
+      { pcId, username, course },
       { createdAt: 0, updatedAt: 0, __v: 0 }
     );
     if (!student) {

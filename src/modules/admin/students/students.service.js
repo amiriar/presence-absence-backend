@@ -18,8 +18,8 @@ class AdminStudentService {
     return student;
   }
 
-  async isLoggedById(pcId) {
-    const student = await this.#model.find({ pcId: pcId });
+  async isLoggedById(nationalCode) {
+    const student = await this.#model.find(nationalCode);
     if (!student) throw new createHttpError[404]();
     return student;
   }

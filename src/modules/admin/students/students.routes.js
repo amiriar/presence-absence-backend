@@ -38,7 +38,7 @@ router.get(
 
 // one student data by id
 router.get(
-  "/student/:pcId",
+  "/student/:nationalCode",
   checkPermission([PERMISSIONS.ADMIN]),
   AdminStudentController.isLoggedById
 );
