@@ -49,7 +49,8 @@ class StudentService {
 
     student.lastDateIn = lastDateIn;
     await student.save();
-    return student;
+    const token = this.signToken({ payload: { username, pcId } });
+    return token;
   }
 
   async signToken(payload) {

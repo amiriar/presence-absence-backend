@@ -12,7 +12,6 @@ class StudentController {
   }
 
   async Register(req, res, next) {
-    console.log(req.body);
     try {
       const { username, password, pcId } = req.body;
       await this.#service.Register(username, password, pcId);
