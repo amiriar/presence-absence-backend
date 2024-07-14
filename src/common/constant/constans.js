@@ -10,5 +10,5 @@ module.exports = {
         ADMIN : ["all"],
         ALL : "all"
     }),
-    // ACCESS_TOKEN_SECRET_KEY:"ADGWSEg23424YGvqa345gVe$%3ef45yuG"
+    ACCESS_TOKEN_SECRET_KEY:"ADGWSEg23424YGvqa345gVe$%3ef45yuG"
 }

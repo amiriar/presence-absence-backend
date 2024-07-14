@@ -3,13 +3,16 @@ const createHttpError = require("http-errors");
 const bcrypt = require("bcrypt");
 const StudentsModel = require("./students.model");
 const jwt = require("jsonwebtoken");
+const PresentationModel = require("../OtherModels/presentation");
 
 class StudentService {
   #model;
+  #presentationmodel;
 
   constructor() {
     autoBind(this);
     this.#model = StudentsModel;
+    this.#presentationmodel = PresentationModel;
   }
   async Register(username, password, pcId) {
     let user = await this.#model.findOne({
@@ -32,7 +35,9 @@ class StudentService {
   }
 
   async Loggin(data) {
-    const { pcId, username, password, lastDateIn } = data;
+    const { pcId, username, password, lastDateIn, course } = data;
+    const date = moment().format("jYYYY/jM/jD");
+    const time = moment().format("HH:mm");
 
     const student = await this.#model.findOne(
       { pcId, username },
@@ -49,6 +54,14 @@ class StudentService {
 
     student.lastDateIn = lastDateIn;
     await student.save();
+
+    await this.#presentationmodel.create({
+      stuId: student._id,
+      course,
+      date,
+      entrance: time,
+    });
+
     const token = this.signToken({ payload: { username, pcId } });
     return token;
   }
@@ -56,6 +69,8 @@ class StudentService {
   async signToken(payload) {
     return jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: "5h" });
   }
+
+  async Logout() {}
 }
 
 module.exports = new StudentService();

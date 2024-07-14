@@ -15,7 +15,7 @@ const router = Router();
 // daily student logs
 router.get(
   "/logs/day",
-  checkPermission([PERMISSIONS.ADMIN]),
+  // checkPermission([PERMISSIONS.ADMIN]),
   AdminStudentController.getTodayLogs
 );
 // daily student logs
@@ -23,7 +23,7 @@ router.get(
 // montly student logs
 router.get(
   "/logs/month",
-  checkPermission([PERMISSIONS.ADMIN]),
+  // checkPermission([PERMISSIONS.ADMIN]),
   AdminStudentController.getMonthlyLogs
 );
 // montly student logs

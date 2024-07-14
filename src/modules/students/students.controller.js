@@ -32,7 +32,13 @@ class StudentController {
   async Loggin(req, res, next) {
     const date = moment().format("jYYYY/jM/jD HH:mm");
     try {
-      const { pcId, username, password } = req.body;
+      const { pcId, username, password, course } = req.body;
+
+      if (!course === "network" || !course === "software") {
+        return res.status(401).json({
+          error: "لطفا فیلد هارا دست کاری نکنید!!.",
+        });
+      }
 
       if (!pcId || !username || !password) {
         return res.status(401).json({
@@ -73,6 +79,26 @@ class StudentController {
       next(error);
     }
   }
+
+  async logout(req, res, next) {
+    try {
+      const result = this.#service.Logout()
+      return res.clearCookie(CookieNames.AccessToken).status(200).json({
+        message: Authmessage.LoggedOutSuccessfully,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async preventWhenLoggedIn(req, res, next) {
+    if (req?.cookies.accessToken) {
+        return res.status(400).json({
+            message: "شما از قبل وارد شده اید."
+        });
+    }
+    next();
+}
 }
 
 module.exports = new StudentController();
