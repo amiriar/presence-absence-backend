@@ -1,7 +1,7 @@
 const autoBind = require("auto-bind");
 const pcNames = require("../../common/utils/pcNames.json");
-const moment = require("moment-jalaali");
 const studentsService = require("./students.service");
+const moment = require("moment-jalaali");
 
 class StudentController {
   #service;
@@ -34,12 +34,11 @@ class StudentController {
     try {
       const { pcId, username, password, course } = req.body;
 
-      if (course !== 'network' && course !== 'software') {
+      if (course !== "network" && course !== "software") {
         return res.status(401).json({
           error: "لطفا فیلد هارا دست کاری نکنید!!.",
         });
       }
-
 
       if (!pcId || !username || !password || !course) {
         return res.status(401).json({
@@ -82,10 +81,14 @@ class StudentController {
   }
 
   async logout(req, res, next) {
+    const date = moment().format("jYYYY/jM/jD");
+    const user = req.user;
     try {
-      const result = this.#service.Logout();
-      return res.clearCookie(CookieNames.AccessToken).status(200).json({
-        message: Authmessage.LoggedOutSuccessfully,
+      await this.#service.Logout(user, date);
+      return res
+      .clearCookie("accessToken")
+      .status(200).json({
+        message: 'Logged Out Successfully',
       });
     } catch (error) {
       next(error);

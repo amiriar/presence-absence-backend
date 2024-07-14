@@ -6,7 +6,7 @@ const router = Router()
 
 router.post("/sabteNam", studentsController.preventWhenLoggedIn, studentsController.Register)
 router.post("/login", studentsController.preventWhenLoggedIn, studentsController.Loggin)
-router.post("/logout",Authorization,studentsController.Loggin)
+router.post("/logout",Authorization, studentsController.logout)
 
 module.exports = {
     StudentsRoutes: router

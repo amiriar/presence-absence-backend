@@ -7,8 +7,8 @@ const Authorization = async (req,res,next) => {
         const token = req?.cookies?.accessToken
         if(!token) throw new createHttpError.Unauthorized('please login')
         const data = jwt.verify(token, process.env.JWT_SECRET_KEY)
-    if(data?.id){
-        const user = await StudentsModel.findById(data.id, {accessToken: 0, __v:0, password: 0 }).lean()
+    if(data?.payload.id){
+        const user = await StudentsModel.findById(data.payload.id, {accessToken: 0, __v:0, password: 0 }).lean()
         if(!user) throw new createHttpError.Unauthorized("user not found")
         req.user = user
         return next()

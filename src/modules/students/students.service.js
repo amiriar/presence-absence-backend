@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const StudentsModel = require("./students.model");
 const jwt = require("jsonwebtoken");
 const PresentationModel = require("../OtherModels/presentation");
-const moment = require("jalali-moment")
+const moment = require("jalali-moment");
 
 class StudentService {
   #model;
@@ -63,7 +63,7 @@ class StudentService {
       entrance: time,
     });
 
-    const token = this.signToken({ payload: { username, pcId } });
+    const token = this.signToken({ payload: { username, pcId, id: student._id, role: student.role } });
     return token;
   }
 
@@ -71,7 +71,20 @@ class StudentService {
     return jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: "5h" });
   }
 
-  async Logout() {}
+  async Logout() {
+    try {
+      const result = await this.#presentationmodel.find({
+        date: date,
+        stuId: user._id,
+      });
+
+      console.log(result);
+
+      return result;
+    } catch (error) {
+      return { error: "An error occurred while logging out." };
+    }
+  }
 }
 
 module.exports = new StudentService();
