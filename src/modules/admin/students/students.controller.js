@@ -31,8 +31,9 @@ class StudentController {
 
   async changeStudent(req, res, next) {
     try {
-      const { pcId } = req.params;
-      const student = await this.#service.changeStudent(pcId);
+      const { nationalCode } = req.params;
+      const data = req.body;
+      const student = await this.#service.changeStudent(data, nationalCode);
       return res.json(student);
     } catch (error) {
       next(error);
