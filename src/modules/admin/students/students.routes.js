@@ -52,13 +52,13 @@ router.get(
 );
 // one student data by id
 
-// change one student data by id
+// change one student data by nationalCode
 router.post(
-  "/change/:pcId",
+  "/change/:nationalCode",
   checkPermission([PERMISSIONS.ADMIN]),
   AdminStudentController.changeStudent
 );
-// change one student data by id
+// change one student data by nationalCode
 
 module.exports = {
   AdminStudentsRoutes: router,
