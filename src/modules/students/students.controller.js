@@ -13,8 +13,8 @@ class StudentController {
 
   async Register(req, res, next) {
     try {
-      const { username, password, pcId } = req.body;
-      await this.#service.Register(username, password, pcId);
+      const { username, password, pcId, course } = req.body;
+      await this.#service.Register(username, password, pcId, course);
       return res.json({
         statusCode: 200,
         message: "registerSuccessfully",
@@ -39,16 +39,9 @@ class StudentController {
           error: "لطفا فیلد هارا دست کاری نکنید!!.",
         });
       }
-
       if (!pcId || !username || !password || !course) {
         return res.status(401).json({
           error: "لطفا تمامی فیلد ها را پر کنید.",
-        });
-      }
-
-      if (password < 8 || password > 32) {
-        res.status(401).json({
-          error: "رمز عبور خود را به درستی وارد کنید.",
         });
       }
 
@@ -103,6 +96,27 @@ class StudentController {
     }
     next();
   }
+
+  async whoami(req, res, next) {
+    try {
+      const user = req.user;
+      if (user) {
+        return res.json(user);
+      } else {
+        return res
+          .json({
+            statusCode: 401,
+            message: "Not Authorized",
+            authorized: false,
+          })
+          .statusCode(401);
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+
 }
 
 module.exports = new StudentController();

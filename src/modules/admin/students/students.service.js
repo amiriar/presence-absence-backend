@@ -19,7 +19,10 @@ class AdminStudentService {
   }
 
   async isLoggedById(nationalCode) {
-    const student = await this.#model.find(nationalCode);
+    const student = await this.#model.findOne(
+      { nationalCode },
+      { __v: 0, password: 0, createdAt: 0, updatedAt: 0 }
+    );
     if (!student) throw new createHttpError[404]();
     return student;
   }
@@ -31,11 +34,11 @@ class AdminStudentService {
     });
     return logs;
   }
-  
+
   async getMonthlyLogs() {
     const startOfMonth = moment().startOf("jMonth").format("jYYYY/jM/jD");
     const endOfMonth = moment().endOf("jMonth").format("jYYYY/jM/jD");
-    
+
     const logs = await this.#model.find({
       lastDateIn: { $gte: startOfMonth, $lte: endOfMonth },
     });
@@ -46,7 +49,6 @@ class AdminStudentService {
     const student = await this.#model.find();
     return student;
   }
-  
 }
 
 module.exports = new AdminStudentService();

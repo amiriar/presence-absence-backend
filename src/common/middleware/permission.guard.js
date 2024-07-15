@@ -1,16 +1,17 @@
 const createHttpError = require("http-errors");
-const { PermissionsModel } = require("../../modules/OtherModels/permission");
-const { RoleModel } = require("../../modules/OtherModels/role");
-const { PERMISSIONS } = require("../constant/constans");
+const RoleModel = require("../../modules/OtherModels/role")
+const PermissionsModel = require("../../modules/OtherModels/permission")
+const PERMISSIONS = require("../../common/constant/constans")
 
 function checkPermission(requiredPermissions = []) {
     return async function (req, res, next) {
       try {
         const allPermissions = requiredPermissions.flat(2)
         const user = req.user;
+        console.log(user);
         if(user){
-          const role = await RoleModel.findOne({title: user.role})
-          const permissions = await PermissionsModel.find({_id: {$in : role.permissions}})
+          const role = await RoleModel.RoleModel.findOne({title: user.role})
+          const permissions = await PermissionsModel.PermissionsModel.find({_id: {$in : role.permissions}})
           const userPermissions = permissions.map(item => item.name)
           const hasPermission = allPermissions.every(permission => {
             return userPermissions.includes(permission)

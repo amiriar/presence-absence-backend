@@ -29,6 +29,7 @@ class StudentService {
       pcId,
       username,
       password: hashedPassword,
+      course,
     });
 
     await user.save();
@@ -41,7 +42,7 @@ class StudentService {
     const time = moment().format("HH:mm");
 
     const student = await this.#model.findOne(
-      { pcId, username, course },
+      { pcId, username },
       { createdAt: 0, updatedAt: 0, __v: 0 }
     );
     if (!student) {
@@ -63,7 +64,9 @@ class StudentService {
       entrance: time,
     });
 
-    const token = this.signToken({ payload: { username, pcId, id: student._id, role: student.role } });
+    const token = await this.signToken({
+      payload: { username, pcId, id: student._id, role: student.role },
+    });
     return token;
   }
 

@@ -26,24 +26,23 @@ function VerifyAccessToken(req, res, next) {
         if (err)
           throw createHttpError.Unauthorized("وارد حساب کاربری خود شوید");
 
-        // Extract email and username from the payload
-        const { email, username } = payload || {};
+        const { pcId, username } = payload || {};
 
-        // Find user by email or username
         const query = {};
-        if (email) query.email = email;
+        if (pcId) query.pcId = pcId;
         else if (username) query.username = username;
 
-        // Query the database for the user
         const user = await StudentsModel.findOne(query, {
           password: 0,
           __v: 0,
+          createdAt: 0,
+          updatedAt: 0,
         });
 
         if (!user) throw createHttpError.Unauthorized("حساب کاربری یافت نشد");
 
-        // Attach user to the request object
         req.user = user;
+        console.log(user);
         return next();
       } catch (error) {
         next(error);
