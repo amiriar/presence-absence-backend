@@ -6,7 +6,7 @@ const StudentsSchema = new Schema(
     firstName: { type: String, required: false },
     lastName: { type: String, required: false },
     username: { type: String, required: true },
-    natinalCode: { type: String, required: false },
+    nationalCode: { type: String, required: false },
     course: { type: String, required: false },
     role: { type: String, default: "USER" },
     lastDateIn: { type: String, required: false },
