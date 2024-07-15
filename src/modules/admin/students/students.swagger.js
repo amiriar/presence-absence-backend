@@ -86,6 +86,23 @@
 
 /**
  * @swagger
+ *  /api/admin/students/logs/{nationalCode}:
+ *    get:
+ *      tags:
+ *        - Students (AdminPanel)
+ *      summary: Get this month's student logs
+ *      parameters:
+ *        - name: nationalCode
+ *          in: path
+ *          required: true
+ *          description: national code of the student
+ *      responses:
+ *        200:
+ *          description: Successful operation
+ */
+
+/**
+ * @swagger
  *  /api/admin/students/all:
  *    get:
  *      tags:

@@ -56,6 +56,16 @@ class StudentController {
       next(error);
     }
   }
+
+  async getStudentsLogs(req, res, next) {
+    const { nationalCode } = req.params;
+    try {
+      const logs = await this.#service.getStudentsLogs(nationalCode);
+      return res.json(logs);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new StudentController();

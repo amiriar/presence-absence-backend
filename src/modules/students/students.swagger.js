@@ -19,7 +19,7 @@
  *     properties: 
  *      username:
  *       type: string
- *      email:
+ *      pcId:
  *       type: string
  *      password:
  *       type: string
@@ -36,7 +36,7 @@
  *     properties: 
  *      username:
  *       type: string
- *      email:
+ *      pcId:
  *       type: string
  *      password:
  *       type: string

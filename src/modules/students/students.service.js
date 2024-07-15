@@ -74,16 +74,26 @@ class StudentService {
     return jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: "5h" });
   }
 
-  async Logout() {
+  async Logout(user, date, time) {
     try {
-      const result = await this.#presentationmodel.find({
-        date: date,
-        stuId: user._id,
-      });
+      const result = await this.#presentationmodel
+        .find({
+          date: date,
+          stuId: user._id,
+        })
+        .sort({ _id: -1 })
+        .limit(1);
 
-      console.log(result);
+      const update = await this.#presentationmodel.updateOne(
+        { _id: result[0]._id },
+        { $set: { exit: time } }
+      );
 
-      return result;
+      if (update.matchedCount === 1) {
+        return true;
+      } else {
+        throw new createHttpError(401, "کاربری با این مشخصات یافت نشد.");
+      }
     } catch (error) {
       return { error: "An error occurred while logging out." };
     }

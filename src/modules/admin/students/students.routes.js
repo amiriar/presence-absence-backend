@@ -28,6 +28,14 @@ router.get(
 );
 // montly student logs
 
+// one student logs
+router.get(
+  "/logs/:nationalCode",
+  checkPermission([PERMISSIONS.ADMIN]),
+  AdminStudentController.getStudentsLogs
+);
+// one student logs
+
 // all students
 router.get(
   "/all",

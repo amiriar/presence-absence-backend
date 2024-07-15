@@ -42,7 +42,6 @@ function VerifyAccessToken(req, res, next) {
         if (!user) throw createHttpError.Unauthorized("حساب کاربری یافت نشد");
 
         req.user = user;
-        console.log(user);
         return next();
       } catch (error) {
         next(error);

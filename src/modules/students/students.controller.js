@@ -75,14 +75,24 @@ class StudentController {
 
   async logout(req, res, next) {
     const date = moment().format("jYYYY/jM/jD");
+    const time = moment().format("HH:mm");
     const user = req.user;
     try {
-      await this.#service.Logout(user, date);
-      return res
-      .clearCookie("accessToken")
-      .status(200).json({
-        message: 'Logged Out Successfully',
-      });
+      const response = await this.#service.Logout(user, date, time);
+      if (response){
+        return (
+          res
+            // .clearCookie("accessToken")
+            .status(200)
+            .json({
+              message: "Logged Out Successfully",
+            })
+        );
+      }else{
+        return res.status(401).json({
+          error: "در خروج مشکلی پیش آمد! لطفا با ادمین در ارتباط باشید..",
+        });
+      }
     } catch (error) {
       next(error);
     }
@@ -115,8 +125,6 @@ class StudentController {
       next(error);
     }
   }
-
-
 }
 
 module.exports = new StudentController();

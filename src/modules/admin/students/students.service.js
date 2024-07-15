@@ -4,13 +4,16 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const moment = require("moment-jalaali");
 const StudentsModel = require("../../students/students.model");
+const PresentationModel = require("../../OtherModels/presentation");
 
 class AdminStudentService {
   #model;
+  #presentationModel;
 
   constructor() {
     autoBind(this);
     this.#model = StudentsModel;
+    this.#presentationModel = PresentationModel;
   }
 
   async isLogged() {
@@ -41,6 +44,15 @@ class AdminStudentService {
 
     const logs = await this.#model.find({
       lastDateIn: { $gte: startOfMonth, $lte: endOfMonth },
+    });
+    return logs;
+  }
+
+  async getStudentsLogs(nationalCode) {
+    const user = await this.#model.findOne({ nationalCode }, { _id: 1 });
+
+    const logs = await this.#presentationModel.find({
+      stuId: user._id,
     });
     return logs;
   }

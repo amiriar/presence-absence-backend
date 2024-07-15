@@ -8,7 +8,6 @@ function checkPermission(requiredPermissions = []) {
       try {
         const allPermissions = requiredPermissions.flat(2)
         const user = req.user;
-        console.log(user);
         if(user){
           const role = await RoleModel.RoleModel.findOne({title: user.role})
           const permissions = await PermissionsModel.PermissionsModel.find({_id: {$in : role.permissions}})
