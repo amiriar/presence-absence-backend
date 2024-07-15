@@ -1,25 +1,36 @@
 const autoBind = require("auto-bind");
 const createHttpError = require("http-errors");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const moment = require("moment-jalaali");
 const StudentsModel = require("../../students/students.model");
 const PresentationModel = require("../../OtherModels/presentation");
 
 class AdminStudentService {
   #model;
-  #presentationModel;
+  #am_presentationModel;
+  #pm_presentationModel;
 
   constructor() {
     autoBind(this);
     this.#model = StudentsModel;
-    this.#presentationModel = PresentationModel;
+    this.#am_presentationModel = PresentationModel.PresentationModel_am;
+    this.#pm_presentationModel = PresentationModel.PresentationModel_pm;
   }
 
   async isLogged() {
-    const student = await this.#model.find();
-    return student;
-  }
+    return this.#model.aggregate([
+      {
+        $addFields: {
+          numericPcId: { $toInt: "$pcId" }
+        }
+      },
+      {
+        $sort: { numericPcId: 1 }
+      },
+      {
+        $project: { numericPcId: 0 }
+      }
+    ]);
+  }  
 
   async isLoggedById(nationalCode) {
     const student = await this.#model.findOne(
@@ -50,11 +61,13 @@ class AdminStudentService {
 
   async getStudentsLogs(nationalCode) {
     const user = await this.#model.findOne({ nationalCode }, { _id: 1 });
+    if (!user)
+      throw new createHttpError.NotFound("کاربری با این کد ملی وجود ندارد..");
 
-    const logs = await this.#presentationModel.find({
-      stuId: user._id,
-    });
-    return logs;
+    const am_logs = await this.#am_presentationModel.find({ stuId: user._id });
+    const pm_logs = await this.#pm_presentationModel.find({ stuId: user._id });
+    
+    return { logs: { am: am_logs, pm: pm_logs } };
   }
 
   async changeStudent(data, nationalCode) {
@@ -64,6 +77,9 @@ class AdminStudentService {
         $set: data,
       }
     );
+    if (updateResult.matchedCount === 0) {
+      throw new createHttpError.NotFound("Student not found");
+    }
     return student;
   }
 }

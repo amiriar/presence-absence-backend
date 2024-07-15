@@ -82,7 +82,7 @@ class StudentController {
       if (response){
         return (
           res
-            // .clearCookie("accessToken")
+            .clearCookie("accessToken")
             .status(200)
             .json({
               message: "Logged Out Successfully",

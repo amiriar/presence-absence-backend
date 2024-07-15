@@ -8,65 +8,73 @@ const moment = require("jalali-moment");
 
 class StudentService {
   #model;
-  #presentationmodel;
+  #am_presentationmodel;
+  #pm_presentationmodel;
 
   constructor() {
     autoBind(this);
     this.#model = StudentsModel;
-    this.#presentationmodel = PresentationModel;
+    this.#am_presentationmodel = PresentationModel.PresentationModel_am;
+    this.#pm_presentationmodel = PresentationModel.PresentationModel_pm;
   }
+
   async Register(username, password, pcId) {
-    let user = await this.#model.findOne({
-      $or: [{ username: username }, { pcId: pcId }],
-    });
+    const user = await this.#model.findOne({ username });
     if (user) {
-      throw new createHttpError.Forbidden("AlreadyExist");
+      throw new createHttpError.Forbidden("User already exists");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    user = await this.#model.create({
+    const newUser = await this.#model.create({
       pcId,
       username,
       password: hashedPassword,
-      course,
     });
 
-    await user.save();
-    return user;
+    await newUser.save();
+    return newUser;
   }
 
   async Loggin(data) {
-    const { pcId, username, password, lastDateIn, course } = data;
+    const { pcId, username, password, course } = data;
     const date = moment().format("jYYYY/jM/jD");
-    const time = moment().format("HH:mm");
+    const hour = moment().format("HH");
+    const minute = moment().format("mm");
 
     const student = await this.#model.findOne(
       { pcId, username },
       { createdAt: 0, updatedAt: 0, __v: 0 }
     );
+
     if (!student) {
-      throw new createHttpError(401, "کاربری با این مشخصات یافت نشد.");
+      throw new createHttpError(401, "User not found");
     }
 
     const isPasswordValid = await bcrypt.compare(password, student.password);
     if (!isPasswordValid) {
-      throw new createHttpError(401, "رمز عبور اشتباه است.");
+      throw new createHttpError(401, "Incorrect password");
     }
 
-    student.lastDateIn = lastDateIn;
+    student.lastDateIn = date;
     await student.save();
 
-    await this.#presentationmodel.create({
+    const presentationModel =
+      hour >= 12 ? this.#pm_presentationmodel : this.#am_presentationmodel;
+    await presentationModel.create({
       stuId: student._id,
       course,
       date,
-      entrance: time,
+      entrance: `${hour}:${minute}`,
     });
 
     const token = await this.signToken({
-      payload: { username, pcId, id: student._id, role: student.role },
+      username,
+      pcId,
+      id: student._id,
+      role: student.role,
     });
+
     return token;
   }
 
@@ -75,27 +83,32 @@ class StudentService {
   }
 
   async Logout(user, date, time) {
+    const hour = moment().format("HH");
+
     try {
-      const result = await this.#presentationmodel
-        .find({
-          date: date,
-          stuId: user._id,
-        })
+      const presentationModel =
+        hour >= 12 ? this.#pm_presentationmodel : this.#am_presentationmodel;
+      const latestPresentation = await presentationModel
+        .find({ date, stuId: user._id })
         .sort({ _id: -1 })
         .limit(1);
 
-      const update = await this.#presentationmodel.updateOne(
-        { _id: result[0]._id },
+      if (latestPresentation.length === 0) {
+        throw new createHttpError(401, "Presentation not found");
+      }
+
+      const update = await presentationModel.updateOne(
+        { _id: latestPresentation[0]._id },
         { $set: { exit: time } }
       );
 
       if (update.matchedCount === 1) {
         return true;
       } else {
-        throw new createHttpError(401, "کاربری با این مشخصات یافت نشد.");
+        throw new createHttpError(401, "Update failed");
       }
     } catch (error) {
-      return { error: "An error occurred while logging out." };
+      throw new createHttpError(500, "An error occurred while logging out");
     }
   }
 }

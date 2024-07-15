@@ -9,7 +9,6 @@ const PresentationSchema_am = new Schema({
 });
 
 const PresentationModel_am = model("am_presentation", PresentationSchema_am);
-module.exports = PresentationModel_am;
 
 const PresentationSchema_pm = new Schema({
   stuId: { type: Types.ObjectId, required: true },
@@ -20,4 +19,4 @@ const PresentationSchema_pm = new Schema({
 });
 
 const PresentationModel_pm = model("pm_presentation", PresentationSchema_pm);
-module.exports = PresentationModel_pm;
+module.exports = { PresentationModel_pm, PresentationModel_am };

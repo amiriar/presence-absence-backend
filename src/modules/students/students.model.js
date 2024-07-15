@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 
 const StudentsSchema = new Schema(
   {
-    pcId: { type: String, required: false },
+    pcId: { type: String, required: true },
     firstName: { type: String, required: false },
     lastName: { type: String, required: false },
     username: { type: String, required: true },
