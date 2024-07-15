@@ -5,8 +5,8 @@ function swaggerConfig(app) {
         swaggerDefinition: {
             openapi: "3.0.1",
             info: {
-                title: "Sadra Backend",
-                description: "this is sadra backend made with ❤️ by amiriar using ExpressJS",
+                title: "Sadra Presentation Backend",
+                description: "this is sadra presentation backend made with ❤️ by amirreza abdolrahimi using ExpressJS",
                 version:"1.0.0"
             },
         },
