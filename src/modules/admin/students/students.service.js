@@ -57,8 +57,13 @@ class AdminStudentService {
     return logs;
   }
 
-  async changeStudent() {
-    const student = await this.#model.find();
+  async changeStudent(data, nationalCode) {
+    const student = await this.#model.updateOne(
+      { nationalCode },
+      {
+        $set: data,
+      }
+    );
     return student;
   }
 }
