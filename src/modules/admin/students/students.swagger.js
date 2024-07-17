@@ -7,6 +7,13 @@
 
 /**
  * @swagger
+ * tags:
+ *  name: Logs (AdminPanel)
+ *  description: Logs (AdminPanel) module and routes
+ */
+
+/**
+ * @swagger
  *  components:
  *      schemas:
  *         UpdateStudent:
@@ -65,7 +72,7 @@
  *  /api/admin/students/logs/day:
  *    get:
  *      tags:
- *        - Students (AdminPanel)
+ *        - Logs (AdminPanel)
  *      summary: Get today's student logs
  *      responses:
  *        200:
@@ -77,7 +84,7 @@
  *  /api/admin/students/logs/month:
  *    get:
  *      tags:
- *        - Students (AdminPanel)
+ *        - Logs (AdminPanel)
  *      summary: Get this month's student logs
  *      responses:
  *        200:
@@ -89,7 +96,7 @@
  *  /api/admin/students/logs/{nationalCode}:
  *    get:
  *      tags:
- *        - Students (AdminPanel)
+ *        - Logs (AdminPanel)
  *      summary: Get this month's student logs
  *      parameters:
  *        - name: nationalCode
