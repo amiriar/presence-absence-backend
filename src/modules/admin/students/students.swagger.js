@@ -141,13 +141,13 @@
 
 /**
  * @swagger
- *  /api/admin/students/change/{pcId}:
+ *  /api/admin/students/change/{nationalCode}:
  *    post:
  *      tags:
  *        - Students (AdminPanel)
  *      summary: Change student data by PC ID
  *      parameters:
- *        - name: pcId
+ *        - name: nationalCode
  *          in: path
  *          required: true
  *          description: PC ID of the student

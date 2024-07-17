@@ -90,6 +90,7 @@ class StudentController {
         );
       }else{
         return res.status(401).json({
+          statusCode: 403,        
           error: "در خروج مشکلی پیش آمد! لطفا با ادمین در ارتباط باشید..",
         });
       }
