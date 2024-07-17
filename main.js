@@ -21,7 +21,7 @@ async function main() {
       allowedHeaders: ["Content-Type", "Authorization", "Bearer", "x-api-key"],
     })
   );
-
+// P@$$W0rdAdmin
   
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));

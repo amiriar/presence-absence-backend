@@ -10,9 +10,9 @@ const StudentsSchema = new Schema(
     course: { type: String, required: false },
     role: { type: String, default: "USER" },
     lastDateIn: { type: String, required: false },
-    // email: { type: String, required: true },
+    email: { type: String, required: true },
     password: { type: String, required: true },
-    // phoneNumber: { type: String, required: false },
+    phoneNumber: { type: String, required: false },
   },
   { timestamps: true }
 );

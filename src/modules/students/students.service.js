@@ -108,6 +108,7 @@ class StudentService {
         throw new createHttpError(401, "Update failed");
       }
     } catch (error) {
+      console.log(error);
       throw new createHttpError(500, "An error occurred while logging out");
     }
   }

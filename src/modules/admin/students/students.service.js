@@ -20,17 +20,17 @@ class AdminStudentService {
     return this.#model.aggregate([
       {
         $addFields: {
-          numericPcId: { $toInt: "$pcId" }
-        }
+          numericPcId: { $toInt: "$pcId" },
+        },
       },
       {
-        $sort: { numericPcId: 1 }
+        $sort: { numericPcId: 1 },
       },
       {
-        $project: { numericPcId: 0 }
-      }
+        $project: { numericPcId: 0 },
+      },
     ]);
-  }  
+  }
 
   async isLoggedById(nationalCode) {
     const student = await this.#model.findOne(
@@ -42,33 +42,62 @@ class AdminStudentService {
   }
 
   async getTodayLogs() {
-    const today = moment().format("jYYYY/jM/jD");
-    const logs = await this.#model.find({
-      lastDateIn: { $regex: `^${today}` },
-    });
-    return logs;
+    const today = moment().format('jYYYY/jM/jD');
+    const am_logs = await this.#am_presentationModel
+      .find({date: today},{nationalCode:0})
+      .populate("stuId", "firstName lastName username nationalCode pcId");
+    const pm_logs = await this.#pm_presentationModel
+      .find({date: today},{nationalCode:0})
+      .populate("stuId", "firstName lastName username nationalCode pcId");
+
+    return { logs: { am: am_logs, pm: pm_logs } };
   }
 
   async getMonthlyLogs() {
-    const startOfMonth = moment().startOf("jMonth").format("jYYYY/jM/jD");
-    const endOfMonth = moment().endOf("jMonth").format("jYYYY/jM/jD");
-
-    const logs = await this.#model.find({
-      lastDateIn: { $gte: startOfMonth, $lte: endOfMonth },
-    });
-    return logs;
+    const startOfMonth = moment().startOf('jMonth').format('jYYYY/jM/jD');
+    const endOfMonth = moment().endOf('jMonth').format('jYYYY/jM/jD');
+  
+    // Split the start and end dates for comparison
+    const [startYear, startMonth, startDay] = startOfMonth.split('/').map(Number);
+    const [endYear, endMonth, endDay] = endOfMonth.split('/').map(Number);
+  
+    // Helper function to compare dates
+    const isDateInRange = (date) => {
+      const [year, month, day] = date.split('/').map(Number);
+      if (year < startYear || year > endYear) return false;
+      if (year === startYear && month < startMonth) return false;
+      if (year === endYear && month > endMonth) return false;
+      if (year === startYear && month === startMonth && day < startDay) return false;
+      if (year === endYear && month === endMonth && day > endDay) return false;
+      return true;
+    };
+  
+    // Fetch all logs first
+    const am_logs = await this.#am_presentationModel.find().populate('stuId', 'firstName lastName username nationalCode');
+    const pm_logs = await this.#pm_presentationModel.find().populate('stuId', 'firstName lastName username nationalCode');
+  
+    // Filter logs within the date range
+    const filtered_am_logs = am_logs.filter(log => isDateInRange(log.date));
+    const filtered_pm_logs = pm_logs.filter(log => isDateInRange(log.date));
+  
+    return { logs: { am: filtered_am_logs, pm: filtered_pm_logs } };
   }
+  
 
   async getStudentsLogs(nationalCode) {
     const user = await this.#model.findOne({ nationalCode }, { _id: 1 });
     if (!user)
       throw new createHttpError.NotFound("کاربری با این کد ملی وجود ندارد..");
 
-    const am_logs = await this.#am_presentationModel.find({ stuId: user._id });
-    const pm_logs = await this.#pm_presentationModel.find({ stuId: user._id });
-    
+    const am_logs = await this.#am_presentationModel
+      .find({ stuId: user._id })
+      .populate("stuId", "firstName lastName nationalCode");
+    const pm_logs = await this.#pm_presentationModel
+      .find({ stuId: user._id })
+      .populate("stuId", "firstName lastName nationalCode");
+
     return { logs: { am: am_logs, pm: pm_logs } };
-  }
+  } 
 
   async changeStudent(data, nationalCode) {
     const student = await this.#model.updateOne(
