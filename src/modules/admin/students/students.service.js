@@ -57,11 +57,9 @@ class AdminStudentService {
     const startOfMonth = moment().startOf('jMonth').format('jYYYY/jM/jD');
     const endOfMonth = moment().endOf('jMonth').format('jYYYY/jM/jD');
   
-    // Split the start and end dates for comparison
     const [startYear, startMonth, startDay] = startOfMonth.split('/').map(Number);
     const [endYear, endMonth, endDay] = endOfMonth.split('/').map(Number);
   
-    // Helper function to compare dates
     const isDateInRange = (date) => {
       const [year, month, day] = date.split('/').map(Number);
       if (year < startYear || year > endYear) return false;
@@ -72,11 +70,9 @@ class AdminStudentService {
       return true;
     };
   
-    // Fetch all logs first
     const am_logs = await this.#am_presentationModel.find().populate('stuId', 'firstName lastName username nationalCode');
     const pm_logs = await this.#pm_presentationModel.find().populate('stuId', 'firstName lastName username nationalCode');
   
-    // Filter logs within the date range
     const filtered_am_logs = am_logs.filter(log => isDateInRange(log.date));
     const filtered_pm_logs = pm_logs.filter(log => isDateInRange(log.date));
   
