@@ -101,6 +101,7 @@ class StudentController {
   async preventWhenLoggedIn(req, res, next) {
     if (req?.cookies.accessToken) {
       return res.status(400).json({
+        statusCode: 403,
         message: "شما از قبل وارد شده اید.",
       });
     }
