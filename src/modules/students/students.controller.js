@@ -57,15 +57,14 @@ class StudentController {
 
       return res
         .cookie("accessToken", result, {
-          // httpOnly: true,
-          // secure: process.env.NODE_ENV === NodeEnv.Production,
           httpOnly: false,
           secure: false,
+          maxAge: 18000000,
         })
         .status(200)
         .json({
           statusCode: 200,
-          message: "LogedInSuccessfully",
+          message: "LoggedInSuccessfully",
           result,
         });
     } catch (error) {
@@ -79,18 +78,13 @@ class StudentController {
     const user = req.user;
     try {
       const response = await this.#service.Logout(user, date, time);
-      if (response){
-        return (
-          res
-            .clearCookie("accessToken")
-            .status(200)
-            .json({
-              message: "Logged Out Successfully",
-            })
-        );
-      }else{
+      if (response) {
+        return res.clearCookie("accessToken").status(200).json({
+          message: "Logged Out Successfully",
+        });
+      } else {
         return res.status(401).json({
-          statusCode: 403,        
+          statusCode: 403,
           error: "در خروج مشکلی پیش آمد! لطفا با ادمین در ارتباط باشید..",
         });
       }

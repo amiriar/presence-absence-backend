@@ -102,7 +102,7 @@ class AdminStudentService {
         $set: data,
       }
     );
-    if (updateResult.matchedCount === 0) {
+    if (student.matchedCount === 0) {
       throw new createHttpError.NotFound("Student not found");
     }
     return student;
